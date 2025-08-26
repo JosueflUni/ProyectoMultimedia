@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Tracker</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!--<link rel="stylesheet" href="css/autocomplete.css">-->
+    <link rel="stylesheet" href="css/hybridautoc.css">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎵 Music Tracker</h1>
+            <p>Registra y analiza tu música favorita</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Formulario para agregar canciones -->
+            <div class="section">
+                <h2>Agregar Nueva Canción</h2>
+                <form id="songForm">
+                    <div class="form-group">
+                        <label for="titulo">Título de la canción:</label>
+                        <input type="text" id="titulo" name="titulo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artista">Artista:</label>
+                        <input type="text" id="artista" name="artista" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="genero">Género:</label>
+                        <select id="genero" name="genero" required>
+                            <option value="">Seleccionar género</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Hip-Hop">Hip-Hop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Reggaeton">Reggaeton</option>
+                            <option value="Indie">Indie</option>
+                            <option value="Clásica">Clásica</option>
+                            <option value="R&B">R&B</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tiempo">Tiempo escuchado (minutos):</label>
+                        <input type="number" id="tiempo" name="tiempo" min="1" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Agregar Canción</button>
+                </form>
+            </div>
+
+            <!-- Lista de canciones recientes -->
+            <div class="section">
+                <h2>Canciones Recientes</h2>
+                <div id="songsList">
+                    <!-- Las canciones se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSongs">0</div>
+                    <div>Canciones Registradas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTime">0</div>
+                    <div>Minutos Escuchados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="favoriteGenre">-</div>
+                    <div>Género Favorito</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="averageTime">0</div>
+                    <div>Promedio por Canción (min)</div>
+                </div>
+            </div>
+
+            <!-- Gráfico de géneros -->
+            <div class="section">
+                <h2>Análisis por Géneros</h2>
+                <div class="chart-container">
+                    <canvas id="genreChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de tiempo -->
+            <div class="section">
+                <h2>Tiempo de Escucha por Día</h2>
+                <div class="chart-container">
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/hybridautoc.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
