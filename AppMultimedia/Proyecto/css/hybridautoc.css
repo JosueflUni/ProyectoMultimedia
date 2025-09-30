@@ -1,44 +1,93 @@
 /* ========================================
-   ESTILOS PARA SISTEMA HÍBRIDO DE MÚSICA
+   ESTILOS PARA SISTEMA HÍBRIDO DE MÚSICA - POSICIONAMIENTO CORREGIDO
    ======================================== */
 
-/* Contenedor principal de resultados */
+/* IMPORTANTE: Contenedor del form-group debe tener contexto de apilamiento */
+.form-group {
+    position: relative;
+    z-index: 10; /* Z-index alto para el contenedor */
+    margin-bottom: 20px; /* Espacio adicional para el dropdown */
+}
+
+/* Input principal con contexto correcto */
+#titulo {
+    position: relative;
+    z-index: 11;
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+#titulo:focus {
+    outline: none;
+    border-color: #1DB954;
+    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+    z-index: 12;
+}
+
+/* Contenedor principal de resultados - Posicionamiento mejorado */
 .autocomplete-results {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px); /* Espacio del input */
     left: 0;
     right: 0;
-    background: linear-gradient(145deg, #ffffff, #f8fafc);
-    border: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 4px 20px rgba(0, 0, 0, 0.08);
     max-height: 400px;
     overflow-y: auto;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-    animation: slideDown 0.3s ease-out;
+    z-index: 9999; /* Z-index muy alto */
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 100%;
+    /* Evitar que interfiera con elementos siguientes */
+    pointer-events: none;
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.autocomplete-results:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
 }
 
-/* Indicador de fuentes usadas */
+.autocomplete-results.hidden {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    pointer-events: none;
+    /* Usar visibility para mejor rendimiento */
+    visibility: hidden;
+}
+
+/* Asegurar que el dropdown no empuje contenido hacia abajo */
+.autocomplete-results {
+    position: absolute !important;
+    /* No afectar el flujo del documento */
+}
+
+/* Indicador de fuentes usadas - Mejorado */
 .sources-used {
-    padding: 8px 12px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     text-align: center;
     border-radius: 12px 12px 0 0;
     font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 /* Items individuales de resultados */
@@ -46,12 +95,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(241, 245, 249, 0.6);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    min-height: 70px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
 }
 
 .autocomplete-item:last-child {
@@ -63,14 +115,17 @@
 .autocomplete-item.active {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    transform: translateX(4px);
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+    transform: translateX(6px);
+    box-shadow: 
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 8px 30px rgba(102, 126, 234, 0.3);
+    z-index: 1;
 }
 
 .autocomplete-item:hover .song-title,
 .autocomplete-item.active .song-title {
     color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .autocomplete-item:hover .song-details,
@@ -78,84 +133,108 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
+.autocomplete-item:hover .song-duration,
+.autocomplete-item.active .song-duration {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
 /* Información de la canción */
 .song-info {
     flex: 1;
     min-width: 0;
+    padding-right: 15px;
 }
 
 .song-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    line-height: 1.4;
+    word-break: break-word;
 }
 
 .song-details {
-    font-size: 12px;
+    font-size: 13px;
     color: #64748b;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
+    line-height: 1.3;
 }
 
 .song-duration {
-    font-size: 11px;
-    background: rgba(102, 126, 234, 0.1);
+    font-size: 12px;
+    background: rgba(102, 126, 234, 0.12);
     color: #667eea;
-    padding: 4px 8px;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
-}
-
-.autocomplete-item:hover .song-duration,
-.autocomplete-item.active .song-duration {
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    min-width: 65px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 /* Estilos específicos por fuente */
 .autocomplete-item.local {
     border-left: 4px solid #10b981;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.08), transparent 50%);
 }
 
 .autocomplete-item.musicbrainz {
     border-left: 4px solid #8b5cf6;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.08), transparent 50%);
 }
 
 .autocomplete-item.itunes {
     border-left: 4px solid #f59e0b;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.08), transparent 50%);
 }
 
 .autocomplete-item.cache {
     border-left: 4px solid #06b6d4;
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.08), transparent 50%);
 }
 
-/* Indicador de carga avanzado */
+/* Indicador de carga - Mejor posicionamiento */
 .search-loading {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+    backdrop-filter: blur(15px);
     color: white;
-    padding: 16px;
+    padding: 20px;
     border-radius: 12px;
-    z-index: 1000;
+    z-index: 9998; /* Ligeramente menor que results */
     animation: pulseGlow 2s infinite;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none; /* No interfiere con interacciones */
+}
+
+.search-loading:not(.hidden) {
+    display: block;
+}
+
+.search-loading.hidden {
+    display: none;
 }
 
 @keyframes pulseGlow {
     0%, 100% {
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
     }
     50% {
-        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 0 35px rgba(102, 126, 234, 0.7);
     }
 }
 
@@ -163,12 +242,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
 }
 
 .loading-spinner {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #ffffff;
     border-radius: 50%;
@@ -181,8 +260,9 @@
 }
 
 .loading-text {
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
 }
 
 .loading-sources {
@@ -193,144 +273,137 @@
 }
 
 .source {
-    padding: 4px 8px;
+    padding: 6px 12px;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
+    border-radius: 20px;
     font-size: 11px;
     opacity: 0.6;
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
 }
 
 .source.active {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.35);
     transform: scale(1.05);
     animation: sourceActive 0.5s ease;
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 @keyframes sourceActive {
     0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    50% { transform: scale(1.15); }
     100% { transform: scale(1.05); }
 }
 
 /* Mensaje de sin resultados */
 .no-results {
-    padding: 24px;
+    padding: 30px 20px;
     text-align: center;
     color: #64748b;
-    font-size: 14px;
+    font-size: 15px;
+    background: rgba(248, 250, 252, 0.9);
+    border-radius: 0 0 12px 12px;
 }
 
 .no-results .sources-used {
-    margin-top: 12px;
+    margin-top: 15px;
     background: rgba(100, 116, 139, 0.1);
     color: #64748b;
     border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 11px;
+    padding: 10px 15px;
+    font-size: 12px;
+    border: 1px solid rgba(100, 116, 139, 0.1);
+    position: static;
 }
 
 /* Mensajes de error */
 .error-message {
-    padding: 16px;
+    padding: 20px;
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
     text-align: center;
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
     animation: shake 0.5s ease-in-out;
+    border: 1px solid rgba(220, 38, 38, 0.3);
 }
 
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
 }
 
-/* Panel de estadísticas (modo debug) */
-.stats-panel {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    z-index: 2000;
-    min-width: 200px;
+/* Scrollbar personalizado */
+.autocomplete-results::-webkit-scrollbar {
+    width: 8px;
 }
 
-.stats-header {
-    font-weight: 600;
-    font-size: 12px;
-    color: #1e293b;
-    margin-bottom: 12px;
-    text-align: center;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e2e8f0;
+.autocomplete-results::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.5);
+    border-radius: 0 12px 12px 0;
 }
 
-.stats-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.autocomplete-results::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #667eea, #764ba2);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.stat {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #64748b;
+.autocomplete-results::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5a6fd8, #6c42a0);
 }
 
-.stat span {
-    font-weight: 600;
-    color: #667eea;
+/* IMPORTANTE: Ajustes para evitar superposición con elementos siguientes */
+.section {
+    position: relative;
+    z-index: 1; /* Z-index menor que el autocompletado */
 }
 
-/* Efectos hover mejorados */
-.autocomplete-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1));
-    transition: width 0.3s ease;
+/* Asegurar que el autocompletado no interfiera con otros campos del formulario */
+.form-group:has(#artista) {
+    margin-top: 25px; /* Espacio extra para el dropdown */
 }
 
-.autocomplete-item:hover::before,
-.autocomplete-item.active::before {
-    width: 100%;
+.form-group:has(#genero) {
+    margin-top: 25px;
 }
 
-/* Responsivo para móviles */
+.form-group:has(#tiempo) {
+    margin-top: 25px;
+}
+
+/* Responsive mejorado */
 @media (max-width: 768px) {
     .autocomplete-results {
-        border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+        box-shadow: 
+            0 15px 35px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+        max-height: 300px;
     }
     
     .autocomplete-item {
-        padding: 10px 12px;
+        padding: 14px 16px;
+        min-height: 65px;
     }
     
     .song-title {
-        font-size: 13px;
+        font-size: 14px;
     }
     
     .song-details {
-        font-size: 11px;
-        gap: 6px;
+        font-size: 12px;
+        gap: 8px;
     }
     
     .song-duration {
-        font-size: 10px;
-        padding: 3px 6px;
+        font-size: 11px;
+        padding: 5px 10px;
+        min-width: 60px;
     }
     
     .loading-sources {
@@ -338,40 +411,79 @@
     }
     
     .source {
-        padding: 3px 6px;
+        padding: 5px 10px;
         font-size: 10px;
     }
-    
-    .stats-panel {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin: 20px auto;
-        max-width: 300px;
+
+    .search-loading {
+        padding: 18px;
+    }
+
+    .loading-text {
+        font-size: 14px;
+    }
+
+    /* Ajustes de espaciado en móvil */
+    .form-group:has(#artista),
+    .form-group:has(#genero),
+    .form-group:has(#tiempo) {
+        margin-top: 30px;
     }
 }
 
-/* Animaciones de entrada personalizadas por fuente */
+@media (max-width: 480px) {
+    .autocomplete-item {
+        padding: 12px 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        min-height: 80px;
+    }
+
+    .song-info {
+        padding-right: 0;
+        width: 100%;
+    }
+
+    .song-duration {
+        align-self: flex-end;
+        margin-top: 5px;
+    }
+
+    .sources-used {
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+
+    /* Más espacio en móviles pequeños */
+    .form-group:has(#artista),
+    .form-group:has(#genero),
+    .form-group:has(#tiempo) {
+        margin-top: 35px;
+    }
+}
+
+/* Animaciones de entrada por fuente */
 .autocomplete-item.local {
-    animation: slideInFromLeft 0.3s ease-out;
+    animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .autocomplete-item.musicbrainz {
-    animation: slideInFromRight 0.3s ease-out;
+    animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .autocomplete-item.itunes {
-    animation: fadeInUp 0.3s ease-out;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .autocomplete-item.cache {
-    animation: zoomIn 0.3s ease-out;
+    animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideInFromLeft {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateX(-25px);
     }
     to {
         opacity: 1;
@@ -382,7 +494,7 @@
 @keyframes slideInFromRight {
     from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateX(25px);
     }
     to {
         opacity: 1;
@@ -393,7 +505,7 @@
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(15px);
     }
     to {
         opacity: 1;
@@ -404,7 +516,7 @@
 @keyframes zoomIn {
     from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.95);
     }
     to {
         opacity: 1;
@@ -412,62 +524,32 @@
     }
 }
 
-/* Scrollbar personalizado para resultados */
-.autocomplete-results::-webkit-scrollbar {
-    width: 6px;
-}
-
-.autocomplete-results::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 0 12px 12px 0;
-}
-
-.autocomplete-results::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #667eea, #764ba2);
-    border-radius: 3px;
-}
-
-.autocomplete-results::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #5a6fd8, #6c42a0);
-}
-
-/* Efectos de glassmorphism */
-.autocomplete-results {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.search-loading {
-    background: rgba(102, 126, 234, 0.9);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Estados de conectividad */
 .autocomplete-item.offline {
-    opacity: 0.6;
+    opacity: 0.7;
+    background: rgba(248, 250, 252, 0.8);
 }
 
 .autocomplete-item.offline::after {
     content: '📵';
     position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
+    right: 12px;
+    top: 12px;
+    font-size: 14px;
+    opacity: 0.7;
 }
 
 /* Indicadores de rendimiento */
 .performance-indicator {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #10b981;
     animation: pulse 2s infinite;
+    border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
 .performance-indicator.slow {
@@ -484,22 +566,22 @@
         transform: scale(1);
     }
     50% {
-        opacity: 0.5;
-        transform: scale(1.2);
+        opacity: 0.6;
+        transform: scale(1.3);
     }
 }
 
-/* Transiciones suaves */
-* {
-    transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-}
-
-/* Modo oscuro (opcional) */
+/* Modo oscuro mejorado */
 @media (prefers-color-scheme: dark) {
     .autocomplete-results {
-        background: rgba(30, 41, 59, 0.95);
+        background: rgba(15, 23, 42, 0.98);
         border-color: #475569;
         color: #e2e8f0;
+    }
+    
+    .autocomplete-item {
+        background: rgba(30, 41, 59, 0.7);
+        border-bottom-color: rgba(71, 85, 105, 0.5);
     }
     
     .song-title {
@@ -509,23 +591,106 @@
     .song-details {
         color: #94a3b8;
     }
+
+    .song-duration {
+        background: rgba(102, 126, 234, 0.2);
+        color: #a5b4fc;
+        border-color: rgba(102, 126, 234, 0.3);
+    }
     
     .no-results {
+        background: rgba(15, 23, 42, 0.9);
         color: #94a3b8;
     }
-    
-    .stats-panel {
-        background: rgba(30, 41, 59, 0.95);
-        border-color: #475569;
-        color: #e2e8f0;
-    }
-    
-    .stats-header {
-        color: #f1f5f9;
-        border-color: #475569;
-    }
-    
-    .stat {
-        color: #94a3b8;
-    }
+}
+
+/* Efectos hover mejorados */
+.autocomplete-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.08));
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+}
+
+.autocomplete-item:hover::before,
+.autocomplete-item.active::before {
+    width: 100%;
+}
+
+/* Transiciones globales */
+* {
+    transition: 
+        color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+        background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* CRITICAL: Prevenir que el dropdown interfiera con el layout */
+.autocomplete-results,
+.search-loading {
+    /* No afectar el flujo normal del documento */
+    position: absolute !important;
+    /* Asegurar que esté por encima de todo */
+    z-index: 9999 !important;
+}
+
+/* Asegurar espacio suficiente después del título */
+.form-group:has(#titulo) {
+    margin-bottom: 30px !important;
+}
+
+/* Panel de estadísticas (si está habilitado) */
+.stats-panel {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    z-index: 8000;
+    min-width: 220px;
+    max-width: 280px;
+}
+
+.stats-header {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.stats-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #64748b;
+    padding: 8px 12px;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 8px;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.stat span {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 13px;
 }
